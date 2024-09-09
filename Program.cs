@@ -6,7 +6,7 @@ namespace Task
     {
         static void Main(string[] args)
         {
-            Homework.Start(3);
+            // Homework.Start(2);
             // TaskOnClass.Start(3);
         }
     }

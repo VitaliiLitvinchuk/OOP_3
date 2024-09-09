@@ -34,6 +34,35 @@ namespace Task
                 else
                     Console.WriteLine("Incorrect number");
             }
+
+            public static bool MakeTasksExecutor(Dictionary<string, Action> actions)
+            {
+                Console.WriteLine($"Type a command:\n{string.Join('\n', actions.Select(action => $" - {action.Key}"))}");
+
+                string? command = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(command) || "quit".StartsWith(command, StringComparison.CurrentCultureIgnoreCase))
+                    return false;
+
+                foreach (var action in actions)
+                {
+                    if (action.Key.StartsWith(command, StringComparison.OrdinalIgnoreCase))
+                    {
+                        action.Value.Invoke();
+                        return true;
+                    }
+                    foreach (var commandPart in action.Key.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                        if (commandPart.StartsWith(command, StringComparison.OrdinalIgnoreCase))
+                        {
+                            action.Value.Invoke();
+                            return true;
+                        }
+                }
+
+                Console.WriteLine("Command not found");
+
+                return true;
+            }
         }
     }
     namespace l_t1_03_09_2024
@@ -681,23 +710,25 @@ namespace Task
                 {
                     Task1.ICoffeeMachine coffeeMachine = new Task1.CoffeeMachine(10000, 100);
 
+                    var actions = new Dictionary<string, Action>
+                    {
+                        { "Espresso", () => coffeeMachine.EspressoRule() },
+                        { "Latte", () => coffeeMachine.LatteRule() },
+                        { "Grind 20 Beans", () => coffeeMachine.GrindBeans(20) },
+                        { "Load 5000ml Water", () => coffeeMachine.LoadWater(5000) },
+                        { "Load 20 Coffee Beans", () => coffeeMachine.LoadCoffeeBeans(20) },
+                        { "Get Info", () => Console.WriteLine(coffeeMachine) },
+                        { "Heat Water", () => coffeeMachine.HeatWater() }
+                    };
+
                     while (true)
                     {
                         StringFeatures.DisplayDashes();
-                        Console.WriteLine("1. Espresso\n2. Latte\n3. Grind 20 Beans\n4. Load 5000ml Water\n5. Load 20 Coffee Beans\n6. Get Info\n7. Heat Water\nq. Exit");
                         try
                         {
-                            switch (Console.ReadLine())
-                            {
-                                case "1": coffeeMachine.EspressoRule(); break;
-                                case "2": coffeeMachine.LatteRule(); break;
-                                case "3": coffeeMachine.GrindBeans(20); break;
-                                case "4": coffeeMachine.LoadWater(5000); break;
-                                case "5": coffeeMachine.LoadCoffeeBeans(20); break;
-                                case "6": Console.WriteLine(coffeeMachine); break;
-                                case "7": coffeeMachine.HeatWater(); break;
-                                case "q": return;
-                            }
+                            if (!TaskHelper.MakeTasksExecutor(actions))
+                                break;
+
                         }
                         catch (Exception e)
                         {
@@ -710,22 +741,21 @@ namespace Task
                 {
                     Task2.IDigitalWallet digitalWallet = new Task2.DigitalWallet("login", "password", new Task2.GmailAuthProvider("login", "password"));
 
+                    var actions = new Dictionary<string, Action>
+                    {
+                        { "Check Balance", () => Console.WriteLine(digitalWallet.CheckBalance()) },
+                        { "Withdraw 100", () => Console.WriteLine(digitalWallet.Withdraw(100)) },
+                        { "Deposit 100", () => digitalWallet.Deposit(100) },
+                        { "Get Transaction Log", () => Console.WriteLine(string.Join('\n', digitalWallet.GetTransactionLog())) },
+                        { "Set Auth Provider", () => digitalWallet.SetAuthProvider(new Task2.Privat24AuthProvider("login", "password")) },
+                    };
                     while (true)
                     {
                         StringFeatures.DisplayDashes();
-                        Console.WriteLine("1. Check Balance\n2. Withdraw 100\n3. Deposit 100\n4. Get Transaction Log\n5. Set Auth Provider\nq. Exit");
                         try
                         {
-
-                            switch (Console.ReadLine())
-                            {
-                                case "1": Console.WriteLine(digitalWallet.CheckBalance()); break;
-                                case "2": Console.WriteLine(digitalWallet.Withdraw(100)); break;
-                                case "3": digitalWallet.Deposit(100); break;
-                                case "4": Console.WriteLine(string.Join('\n', digitalWallet.GetTransactionLog())); break;
-                                case "5": digitalWallet.SetAuthProvider(new Task2.Privat24AuthProvider("login", "password")); break;
-                                case "q": return;
-                            }
+                            if (!TaskHelper.MakeTasksExecutor(actions))
+                                break;
                         }
                         catch (Exception e)
                         {
