@@ -483,7 +483,6 @@ namespace Task
                 {
                     GrindBeans(20);
 
-
                     bool heating = false;
                     try
                     {
@@ -556,7 +555,6 @@ namespace Task
                     else throw new Exception("Not enough water!");
                 }
 
-
                 public void UnloadWater(uint amount)
                 {
                     if (Water < amount)
@@ -613,7 +611,7 @@ namespace Task
                 private readonly string _login;
                 private readonly string _password;
                 private readonly List<string> _transactionLog = [];
-                private string token;
+                private string _token;
                 private ILoginProvider _authProvider;
 
                 public DigitalWallet(string login, string password, ILoginProvider authProvider)
@@ -621,7 +619,7 @@ namespace Task
                     _login = login;
                     _password = password.HashPassword();
                     _authProvider = authProvider;
-                    token = _authProvider.GetToken(_password);
+                    _token = _authProvider.GetToken(_password);
                 }
 
                 public double CheckBalance()
@@ -667,11 +665,11 @@ namespace Task
                 public void SetAuthProvider(ILoginProvider provider)
                 {
                     _authProvider = provider;
-                    token = _authProvider.GetToken(_password);
+                    _token = _authProvider.GetToken(_password);
                 }
 
                 private bool IsAuthenticated()
-                    => _authProvider.Validate(token, _password);
+                    => _authProvider.Validate(_token, _password);
             }
         }
 
@@ -740,4 +738,73 @@ namespace Task
             }
         }
     }
+    namespace l_t_09_09_2024
+    {
+        public class TaskOnClass3 : ITask
+        {
+
+        }
+    }
+    namespace h_t_09_09_2024
+    {
+        namespace Task
+        {
+            public interface IBankAccount
+            {
+                void DoSomeLogic();
+            }
+
+            public class BankAccount : IBankAccount
+            {
+                public void DoSomeLogic()
+                {
+                    Console.WriteLine($"{typeof(BankAccount).Name.CamelCaseToSpace()} is doing some logic...");
+                }
+            }
+
+            public class PayoneerAccount : IBankAccount
+            {
+                public void DoSomeLogic()
+                {
+                    Console.WriteLine($"{typeof(PayoneerAccount).Name.CamelCaseToSpace()} is doing some logic...");
+                }
+            }
+
+            public class WiseAccount : IBankAccount
+            {
+                public void DoSomeLogic()
+                {
+                    Console.WriteLine($"{typeof(WiseAccount).Name.CamelCaseToSpace()} is doing some logic...");
+                }
+            }
+
+            public class PaymentProcessor
+            {
+                public static void ProcessPayment(IBankAccount account)
+                {
+                    StringFeatures.DisplayDashes();
+                    Console.WriteLine($"Connecting to bank...");
+                    account.DoSomeLogic();
+                    Console.WriteLine($"Receiving some cash...");
+                    Console.WriteLine($"Disconnecting from bank...");
+                }
+            }
+        }
+        public class Homework3 : ITask
+        {
+            public void Start()
+            {
+                Task.IBankAccount account = new Task.BankAccount();
+                Task.PaymentProcessor.ProcessPayment(account);
+
+                account = new Task.PayoneerAccount();
+                Task.PaymentProcessor.ProcessPayment(account);
+
+                account = new Task.WiseAccount();
+                Task.PaymentProcessor.ProcessPayment(account);
+            }
+        }
+    }
+
+
 }

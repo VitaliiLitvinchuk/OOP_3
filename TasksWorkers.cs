@@ -4,7 +4,10 @@ public class TasksWorkers
 {
     public interface ITask
     {
-        void Start();
+        void Start()
+        {
+            Console.WriteLine("Nothing!");
+        }
     }
 
     public static class Homework
@@ -12,6 +15,7 @@ public class TasksWorkers
         private static readonly IEnumerable<ITask> _homeworks = [
             new h_t_04_09_2024.Homework1(),
             new h_t_06_09_2024.Homework2(),
+            new h_t_09_09_2024.Homework3(),
         ];
         public static void Start(int number)
         {
@@ -24,6 +28,7 @@ public class TasksWorkers
         private static readonly IEnumerable<ITask> _onClass = [
             new l_t2_03_09_2024.TaskOnClass1(),
             new l_t_05_09_2024.TaskOnClass2(),
+            new l_t_09_09_2024.TaskOnClass3(),
         ];
         public static void Start(int number)
         {
