@@ -1,13 +1,13 @@
-﻿using static Task.TasksWorkers;
-
-namespace Task
+﻿namespace Task
 {
     public class Program
     {
         static void Main(string[] args)
         {
-            // Homework.Start(2);
-            // TaskOnClass.Start(3);
+            TasksWorkers.Worker.Start(TasksWorkers.Worker.GetCount());
+
+            // TasksWorkers.Worker.Namespace = "Task.Class";
+            // TasksWorkers.Worker.Start(TasksWorkers.Worker.GetCount());
         }
     }
 }

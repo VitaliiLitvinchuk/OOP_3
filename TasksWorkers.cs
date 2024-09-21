@@ -10,29 +10,28 @@ public class TasksWorkers
         }
     }
 
-    public static class Homework
+    public static class Worker
     {
-        private static readonly IEnumerable<ITask> _homeworks = [
-            new h_t_04_09_2024.Homework1(),
-            new h_t_06_09_2024.Homework2(),
-            new h_t_09_09_2024.Homework3(),
-        ];
-        public static void Start(int number)
+        public static string Namespace { get; set; } = "Task.Homework";
+        private static readonly IEnumerable<ITask> _task = [];
+        private static readonly int _count = 0;
+        static Worker()
         {
-            _homeworks.ElementAt(number - 1).Start();
+            _task = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(a => a.GetTypes())
+                        .Where(t => t.IsClass && !t.IsAbstract && typeof(ITask).IsAssignableFrom(t) && t.Namespace == Namespace)
+                        .OrderBy(t => t.Name)
+                        .Select(Activator.CreateInstance)
+                        .Cast<ITask>();
+            _count = _task.Count();
         }
-    }
-
-    public static class TaskOnClass
-    {
-        private static readonly IEnumerable<ITask> _onClass = [
-            new l_t2_03_09_2024.TaskOnClass1(),
-            new l_t_05_09_2024.TaskOnClass2(),
-            new l_t_09_09_2024.TaskOnClass3(),
-        ];
         public static void Start(int number)
         {
-            _onClass.ElementAt(number - 1).Start();
+            _task.ElementAt(number - 1).Start();
+        }
+        public static int GetCount()
+        {
+            return _count;
         }
     }
 }
