@@ -14,7 +14,6 @@ public class TasksWorkers
     {
         public static string Namespace { get; set; } = "Task.Homework";
         private static readonly IEnumerable<ITask> _task = [];
-        private static readonly int _count = 0;
         static Worker()
         {
             _task = AppDomain.CurrentDomain.GetAssemblies()
@@ -23,7 +22,6 @@ public class TasksWorkers
                         .OrderBy(t => t.Name)
                         .Select(Activator.CreateInstance)
                         .Cast<ITask>();
-            _count = _task.Count();
         }
         public static void Start(int number)
         {
@@ -31,7 +29,7 @@ public class TasksWorkers
         }
         public static int GetCount()
         {
-            return _count;
+            return _task.Count();
         }
     }
 }

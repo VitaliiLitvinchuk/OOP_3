@@ -77,6 +77,10 @@ namespace Task.Homework.h_t_06_09_2024
     {
         public interface ICoffeeMachine
         {
+            public static readonly uint LatteBeans = 25;
+            public static readonly uint EspressoBeans = 20;
+            public static readonly uint WaterLatte = 2500;
+            public static readonly uint WaterEspresso = 2000;
             uint WaterCapacity { get; }
             uint CoffeeBeansCapacity { get; }
             uint Water { get; }
@@ -104,7 +108,7 @@ namespace Task.Homework.h_t_06_09_2024
                     else
                         _water = value;
 
-                    if (_water == 0)
+                    if (_water == uint.MinValue)
                         IsWaterHeated = false;
                 }
             }
@@ -133,7 +137,7 @@ namespace Task.Homework.h_t_06_09_2024
 
             public void EspressoRule()
             {
-                GrindBeans(20);
+                GrindBeans(ICoffeeMachine.EspressoBeans);
 
                 bool heating = false;
                 try
@@ -144,11 +148,11 @@ namespace Task.Homework.h_t_06_09_2024
                         heating = true;
                     }
 
-                    UnloadWater(2000);
+                    UnloadWater(ICoffeeMachine.WaterEspresso);
                 }
                 catch (Exception)
                 {
-                    CoffeeBeans += 20;
+                    CoffeeBeans += ICoffeeMachine.EspressoBeans;
 
                     if (heating)
                         IsWaterHeated = false;
@@ -160,7 +164,7 @@ namespace Task.Homework.h_t_06_09_2024
             }
             public void LatteRule()
             {
-                GrindBeans(25);
+                GrindBeans(ICoffeeMachine.LatteBeans);
 
                 bool heating = false;
                 try
@@ -170,11 +174,11 @@ namespace Task.Homework.h_t_06_09_2024
                         HeatWater();
                         heating = true;
                     }
-                    UnloadWater(2500);
+                    UnloadWater(ICoffeeMachine.WaterLatte);
                 }
                 catch (Exception)
                 {
-                    CoffeeBeans += 25;
+                    CoffeeBeans += ICoffeeMachine.LatteBeans;
 
                     if (heating)
                         IsWaterHeated = false;
@@ -202,7 +206,7 @@ namespace Task.Homework.h_t_06_09_2024
 
             public void HeatWater()
             {
-                if (Water != 0)
+                if (Water != uint.MinValue)
                     IsWaterHeated = true;
                 else throw new Exception("Not enough water!");
             }

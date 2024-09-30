@@ -15,13 +15,17 @@ namespace Task.Homework
         }
         private List<Car> MyCars = [];
         private static readonly string password = "1";
+        private static readonly double carDealer1Balance = 100_000;
+        private static readonly double carDealer1Margin = 5;
+        private static readonly double carDealer2Balance = 1_000_000;
+        private static readonly double carDealer2Margin = 7.5;
         public void Start()
         {
             Console.Write("Enter password: ");
             var passwordInput = Console.ReadLine();
             bool isAdmin = passwordInput == password;
 
-            ICarDealer carDealer1 = new CarDealer(new Inventory(), new CurrentAccount(100_000), 5);
+            ICarDealer carDealer1 = new CarDealer(new Inventory(), new CurrentAccount(carDealer1Balance), carDealer1Margin);
 
             foreach (var car in GetRandomCars())
             {
@@ -31,7 +35,7 @@ namespace Task.Homework
                 carDealer1.BuyCar(car);
             }
 
-            ICarDealer carDealer2 = new CarDealer(new Inventory(), new CurrentAccount(1_000_000), 7.5);
+            ICarDealer carDealer2 = new CarDealer(new Inventory(), new CurrentAccount(carDealer2Balance), carDealer2Margin);
 
             foreach (var car in GetRandomCars())
             {
@@ -177,7 +181,7 @@ namespace Task.Homework.h_t_18_09_2024
         {
             public Inventory.Inventory Inventory { get; } = inventory;
             public IAccount Account { get; } = account;
-            public double Markup { get; } = markup;
+            public double Markup { get; } = 1 + markup / 100;
             public List<Car.Car> GetCars(double budget = double.MaxValue)
                 => Inventory.Cars
                 .Where(car => car.Price <= budget)
@@ -190,7 +194,7 @@ namespace Task.Homework.h_t_18_09_2024
                     return false;
 
                 Account.Balance -= car.Price;
-                car.Price *= (1 + Markup / 100);
+                car.Price *= Markup;
                 Inventory.AddCar(car);
 
                 return true;
@@ -214,7 +218,7 @@ namespace Task.Homework.h_t_18_09_2024
 
                 double diff = car.Price - otherCar.Price;
 
-                if (Account.Balance < diff || otherDealer.Account.Balance < Math.Abs(diff))
+                if (Account.Balance < Math.Abs(diff) || otherDealer.Account.Balance < Math.Abs(diff))
                     return false;
 
                 Account.Balance += diff;

@@ -104,10 +104,11 @@ namespace Task.Homework
 
 namespace Task.Homework.h_t_04_09_2024
 {
-    namespace Task1
+    namespace TaskminimalValue
     {
         abstract class BankAccount(string accountNumber, string owner, double initialBalance)
         {
+            protected const double minimalValue = 1;
             public string AccountNumber { get; set; } = accountNumber;
             public string Owner { get; set; } = owner;
             public double Balance { get; protected set; } = initialBalance;
@@ -124,7 +125,7 @@ namespace Task.Homework.h_t_04_09_2024
 
             public override void Deposit(double amount)
             {
-                if (amount < 1)
+                if (amount < minimalValue)
                 {
                     Console.WriteLine("Deposit amount should be greater than 0");
                     return;
@@ -144,7 +145,7 @@ namespace Task.Homework.h_t_04_09_2024
 
             public override void Deposit(double amount)
             {
-                if (amount < 1)
+                if (amount < minimalValue)
                 {
                     Console.WriteLine("Deposit amount should be greater than 0");
                     return;
@@ -155,7 +156,7 @@ namespace Task.Homework.h_t_04_09_2024
 
             public override void Withdraw(double amount)
             {
-                if (amount < 1)
+                if (amount < minimalValue)
                 {
                     Console.WriteLine("Deposit amount should be greater than 0");
                     return;
@@ -175,6 +176,7 @@ namespace Task.Homework.h_t_04_09_2024
     {
         interface IBankAccount
         {
+            public static readonly double minimalValue = 1;
             string AccountNumber { get; }
             string Owner { get; }
             double Balance { get; }
@@ -194,7 +196,7 @@ namespace Task.Homework.h_t_04_09_2024
 
             public void Deposit(double amount)
             {
-                if (amount < 1)
+                if (amount < IBankAccount.minimalValue)
                 {
                     Console.WriteLine("Deposit amount should be greater than 0");
                     return;
@@ -218,7 +220,7 @@ namespace Task.Homework.h_t_04_09_2024
 
             public void Deposit(double amount)
             {
-                if (amount < 1)
+                if (amount < IBankAccount.minimalValue)
                 {
                     Console.WriteLine("Deposit amount should be greater than 0");
                     return;
@@ -229,7 +231,7 @@ namespace Task.Homework.h_t_04_09_2024
 
             public void Withdraw(double amount)
             {
-                if (amount < 1)
+                if (amount < IBankAccount.minimalValue)
                 {
                     Console.WriteLine("Withdraw amount should be greater than 0");
                     return;
