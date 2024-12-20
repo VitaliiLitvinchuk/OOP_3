@@ -1,4 +1,5 @@
 using Task.Features;
+using Task.Homework.h_t_09_09_2024.Task;
 using static Task.TasksWorkers;
 
 namespace Task.Homework
@@ -7,14 +8,14 @@ namespace Task.Homework
     {
         public void Start()
         {
-            h_t_09_09_2024.Task.IBankAccount account = new h_t_09_09_2024.Task.BankAccount();
-            h_t_09_09_2024.Task.PaymentProcessor.ProcessPayment(account);
+            IBankAccount account = new BankAccount();
+            PaymentProcessor.ProcessPayment(account);
 
-            account = new h_t_09_09_2024.Task.PayoneerAccount();
-            h_t_09_09_2024.Task.PaymentProcessor.ProcessPayment(account);
+            account = new PayoneerAccount();
+            PaymentProcessor.ProcessPayment(account);
 
-            account = new h_t_09_09_2024.Task.WiseAccount();
-            h_t_09_09_2024.Task.PaymentProcessor.ProcessPayment(account);
+            account = new WiseAccount();
+            PaymentProcessor.ProcessPayment(account);
         }
     }
 }

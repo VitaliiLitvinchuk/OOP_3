@@ -20,6 +20,7 @@ public class TasksWorkers
                         .SelectMany(a => a.GetTypes())
                         .Where(t => t.IsClass && !t.IsAbstract && typeof(ITask).IsAssignableFrom(t) && t.Namespace == Namespace)
                         .OrderBy(t => t.Name)
+                        .OrderBy(t => t.Name.Length)
                         .Select(Activator.CreateInstance)
                         .Cast<ITask>();
         }

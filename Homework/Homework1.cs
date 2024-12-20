@@ -104,7 +104,7 @@ namespace Task.Homework
 
 namespace Task.Homework.h_t_04_09_2024
 {
-    namespace TaskminimalValue
+    namespace Task1
     {
         abstract class BankAccount(string accountNumber, string owner, double initialBalance)
         {

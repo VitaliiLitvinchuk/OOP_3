@@ -21,82 +21,88 @@ namespace Task.Homework.h_t_30_09_2024
     {
         public class UnitTest
         {
+            private readonly ILogger _logger = new FileLogger();
             [Theory]
-            [InlineData("asdasd1,asqwe]2\nasdas 3.dasdaas 4 ssda5!#!@ZCASlkazm/z.qw", 15)]
-            public void ShouldSumNumbers(string input, double expected)
+            [InlineData("%$1#&!3&*4(-!#2);/.'.'", 10)]
+            public void ShouldCalculate(string input, int expected)
             {
-                // Arrange
-                var calculator = new Calculator();
+                var calc = new StringCalculator(_logger);
 
-                // Act
-                var result = calculator.Add(input);
+                var result = calc.Add(input);
 
-                // Assert
                 result.Should().Be(expected);
             }
 
             [Theory]
             [InlineData("", 0)]
-            public void ShouldReturnZero(string input, double expected)
+            public void ShouldReturnZero(string input, int expected)
             {
-                // Arrange
-                var calculator = new Calculator();
+                var calc = new StringCalculator(_logger);
 
-                // Act
-                var result = calculator.Add(input);
+                var result = calc.Add(input);
 
-                // Assert
                 result.Should().Be(expected);
             }
 
             [Theory]
-            [InlineData("10000, 231241, 1000, 1001 2", 2)]
-            public void ShouldSkipBigNumbers(string input, double expected)
+            [InlineData("1001 1", 1)]
+            public void ShouldSkipBigNumbers(string input, int expected)
             {
-                // Arrange
-                var calculator = new Calculator();
+                var calc = new StringCalculator(_logger);
 
-                // Act
-                var result = calculator.Add(input);
+                var result = calc.Add(input);
 
-                // Assert
                 result.Should().Be(expected);
             }
 
             [Theory]
-            [InlineData("-10000, 231241, -1000, 1001 2")]
+            [InlineData("-12413, -1213, 1")]
             public void ShouldThrowException(string input)
             {
-                // Arrange
-                var calculator = new Calculator();
+                var calc = new StringCalculator(_logger);
 
-                // Act and Assert
-                Assert.Throws<Exception>(() => calculator.Add(input));
+                Assert.Throws<Exception>(() => calc.Add(input)).Message.Should().Be("negatives not allowed: -12413, -1213");
             }
         }
     }
 
     namespace Task
     {
-        public class Calculator
+        public class StringCalculator(ILogger logger)
         {
-            public string AbsoluteRegex { get; set; } = @"[^-\d]+";
-            public double Add(string values)
+            public string Rgx = @"[^-\d]+";
+            public int Add(string input)
             {
-                var numbers = Regex.Replace(values, AbsoluteRegex, " ")
-                                   .Split(" ", StringSplitOptions.RemoveEmptyEntries)
-                                   .Select(double.Parse);
-                double sum = 0;
+                logger.LogInfo($"Add {input}");
+                string[] stringNumbers = Regex.Replace(input, Rgx, " ").Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                if (numbers.Any(number => number < 0))
-                    throw new Exception($"Negative numbers are not allowed: {string.Join(", ", numbers
-                                                .Where(number => number < 0))}");
+                logger.LogInfo($"Formatting Numbers: {string.Join(", ", stringNumbers)}");
+                int[] numbers = [.. stringNumbers.Where(x => int.TryParse(x, out _)).Select(int.Parse)];
 
-                foreach (var number in numbers)
-                    if (number < 1000)
-                        sum += number;
+                logger.LogInfo($"Search Bellow Zero Numbers: {string.Join(", ", numbers)}");
+                int[] belowZero = [.. numbers.Where(x => x < 0)];
 
-                return sum;
+                if (belowZero.Length != 0)
+                {
+                    logger.LogInfo($"Throw Exception: {string.Join(", ", belowZero)}");
+                    throw new Exception($"negatives not allowed: {string.Join(", ", belowZero)}");
+                }
+
+                logger.LogInfo($"Sum Numbers: {string.Join(", ", numbers)}");
+                return numbers.Where(x => x <= 1000).Sum();
+            }
+        }
+
+        public interface ILogger
+        {
+            void LogInfo(string message);
+        }
+
+        public class FileLogger : ILogger
+        {
+            public void LogInfo(string message)
+            {
+                File.AppendAllLines($"{Directory.GetCurrentDirectory()}/log.txt", [message]);
             }
         }
     }
